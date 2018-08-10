@@ -1,5 +1,6 @@
 package Vista;
 
+import Modelo.GenerarNumero;
 import Modelo.conectar;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,7 +9,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import static javax.swing.UIManager.getInt;
+import javax.swing.table.DefaultTableModel;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /*
@@ -16,26 +21,43 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author ESTACION 4
  */
 public class LoqNuevo extends javax.swing.JFrame {
-ResultSet result;
+
+    ResultSet result;
+    int id = 0;
+    static int idMuestra;
+    String Nombreanalisis = "";
+    String NombreMeto = "";
+
     /**
      * Creates new form LoqNuevo
      */
-    public LoqNuevo() {
+    DefaultComboBoxModel modeloCombo;
+    public LoqNuevo() throws SQLException {
+        numeros();
+        modeloCombo = new DefaultComboBoxModel(new String[]{});
         initComponents();
         llenarClientes();
-  //      llenarLaboratorio();
+        //      llenarLaboratorio();
         llenarSeccion();
-    //    llenarMatriz();
-        llenarMetodologia();
+        //     llenarAnalisis();
+  //      llenarMatriz();
+  //      llenarMetodologia();
         cmbDivision.setEnabled(false);
         AutoCompleteDecorator.decorate(cmbCliente);
+        AutoCompleteDecorator.decorate(cmbAnalisis);
+        AutoCompleteDecorator.decorate(cmbMatriz);
         txtSota.setEnabled(false);
+        cmbSecciones.setEnabled(false);
+        cmbAnalisis.setEnabled(false);
+        cmbMatriz.setEnabled(false);
+       
+        
+        
     }
 
     /**
@@ -78,7 +100,7 @@ ResultSet result;
         cmbDivision = new javax.swing.JComboBox<>();
         btnGuardar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        Tabla_analisis = new javax.swing.JTable();
         btnAgregarAnalisis = new javax.swing.JButton();
         cmbAnalisis = new javax.swing.JComboBox<>();
         jLabel16 = new javax.swing.JLabel();
@@ -88,6 +110,7 @@ ResultSet result;
         jLabel19 = new javax.swing.JLabel();
         jSeparator2 = new javax.swing.JSeparator();
         jSeparator3 = new javax.swing.JSeparator();
+        txt_registro = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -101,6 +124,11 @@ ResultSet result;
         });
 
         cmbLaboratorio.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione...", "LOQ", "Kummerlin", "Aqualaq", "CESMEC", "EULA", "ALS", "SGS", "Ecogestion", "LRR", "", "ANAM", "Algoritmos", "Biotecmar" }));
+        cmbLaboratorio.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbLaboratorioItemStateChanged(evt);
+            }
+        });
         cmbLaboratorio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmbLaboratorioActionPerformed(evt);
@@ -166,11 +194,6 @@ ResultSet result;
         jLabel15.setText("División");
 
         cmbDivision.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione..." }));
-        cmbDivision.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbDivisionActionPerformed(evt);
-            }
-        });
 
         btnGuardar.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         btnGuardar.setText("Finalizar");
@@ -180,7 +203,7 @@ ResultSet result;
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        Tabla_analisis.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -188,7 +211,7 @@ ResultSet result;
 
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(Tabla_analisis);
 
         btnAgregarAnalisis.setText("Añadir");
         btnAgregarAnalisis.addActionListener(new java.awt.event.ActionListener() {
@@ -198,6 +221,16 @@ ResultSet result;
         });
 
         cmbAnalisis.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione..." }));
+        cmbAnalisis.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbAnalisisItemStateChanged(evt);
+            }
+        });
+        cmbAnalisis.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbAnalisisActionPerformed(evt);
+            }
+        });
 
         jLabel16.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel16.setText("Analisis");
@@ -249,7 +282,10 @@ ResultSet result;
                                     .addComponent(cmbMetodologia, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(18, 18, 18)
                                     .addComponent(btnAgregarAnalisis))
-                                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(txt_registro, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                     .addComponent(jLabel9)
                                     .addGap(18, 18, 18)
@@ -309,8 +345,10 @@ ResultSet result;
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_registro, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -377,11 +415,11 @@ ResultSet result;
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1148, Short.MAX_VALUE)
+            .addGap(0, 1151, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 12, Short.MAX_VALUE)))
+                    .addGap(0, 15, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -395,32 +433,28 @@ ResultSet result;
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void cmbDivisionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbDivisionActionPerformed
-
-    }//GEN-LAST:event_cmbDivisionActionPerformed
-
     private void cmbClienteItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbClienteItemStateChanged
-        if(cmbCliente.getSelectedIndex()>-1){
+        if (cmbCliente.getSelectedIndex() > -1) {
             cmbDivision.removeAllItems();
             cargarDivisiones();
         }
     }//GEN-LAST:event_cmbClienteItemStateChanged
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-                       conectar cc= new conectar();
-        Connection cn= cc.conexion();
+        conectar cc = new conectar();
+        Connection cn = cc.conexion();
 
-         
-        String ins="INSERT INTO muestras (fk_idcliente, campaña, laboratorioejecutante, nsota, secciones, fechaingresolaboratorio, ninformeloq, fechaentregaestimada, matriz, "
-                + "fechamuestreo, identificacion, metodologias, observaciones) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        String ins = "INSERT INTO muestras (fk_idcliente, campaña, laboratorioejecutante, nsota, secciones, fechaingresolaboratorio, ninformeloq, fechaentregaestimada, matriz, "
+                + "fechamuestreo, identificacion,metodologias, observaciones) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         try {
             PreparedStatement pst = cn.prepareStatement(ins);
-            
+
             pst.setInt(1, (int) cmbDivision.getSelectedIndex());
             pst.setString(2, txtCampana.getText());
             pst.setString(3, (String) cmbLaboratorio.getSelectedItem());
             pst.setString(4, txtSota.getText());
+          //  pst.setInt(4, Integer.parseInt(txtSota.getText()));
             pst.setString(5, (String) cmbSecciones.getSelectedItem());
             pst.setDate(6, new java.sql.Date(fechaIngreso.getDate().getTime()));
             pst.setString(7, txtInformeLOQ.getText());
@@ -431,24 +465,21 @@ ResultSet result;
             pst.setString(12, (String) cmbMetodologia.getSelectedItem());
             pst.setString(13, txtObservaciones.getText());
 
-            int n= pst.executeUpdate();
+            int n = pst.executeUpdate();
             pst.close();
 
-            if(n>0)
-            {
-                
+            if (n > 0) {
+
                 JOptionPane.showMessageDialog(this, "Se guardaron los datos");
-         
-            }
-            else
-            {
+
+            } else {
                 JOptionPane.showMessageDialog(this, "Error");
             }
 
-       } catch (SQLException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, ex);
 
-        }            
+        }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void cmbLaboratorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbLaboratorioActionPerformed
@@ -458,33 +489,63 @@ ResultSet result;
                 JOptionPane.showMessageDialog(this, "Seleccione Laboratorio");
                 break;
             case 1:
-               txtSota.setEnabled(true);
+                txtSota.setEnabled(false);
+                cmbMatriz.setEnabled(true);
+                cmbAnalisis.setEnabled(true);
+                break;
+            default:
+                cmbSecciones.setEnabled(false);
+                txtSota.setEnabled(true);
                 break;
         }
     }//GEN-LAST:event_cmbLaboratorioActionPerformed
 
     private void cmbSeccionesItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbSeccionesItemStateChanged
-        if(cmbSecciones.getSelectedIndex()>-1){
-            cmbMatriz.removeAllItems();
-            cargarMatriz();
-        }        // TODO add your handling code here:
+      // TODO add your handling code here:
     }//GEN-LAST:event_cmbSeccionesItemStateChanged
 
     private void cmbMatrizItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbMatrizItemStateChanged
-        if(cmbMatriz.getSelectedIndex()>-1){
+        if (cmbMatriz.getSelectedIndex() > -1) {
             cmbAnalisis.removeAllItems();
-            cargarMatriz();
+            cargarAnalisis();
         }          // TODO add your handling code here:
     }//GEN-LAST:event_cmbMatrizItemStateChanged
 
     private void btnAgregarAnalisisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarAnalisisActionPerformed
-        // TODO add your handling code here:
+        Nombreanalisis = (String) cmbAnalisis.getSelectedItem();
+        NombreMeto = (String) cmbMetodologia.getSelectedItem();
+        try {
+            insertaranalisis();
+            llenarTabla();
+        } catch (SQLException ex) {
+            Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnAgregarAnalisisActionPerformed
+
+    private void cmbAnalisisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbAnalisisActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbAnalisisActionPerformed
+
+    private void cmbAnalisisItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbAnalisisItemStateChanged
+         if (cmbAnalisis.getSelectedIndex() > -1) {
+             cmbMetodologia.removeAllItems();
+             cargarMetodologia();
+        }
+    }//GEN-LAST:event_cmbAnalisisItemStateChanged
+
+    private void cmbLaboratorioItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbLaboratorioItemStateChanged
+        if (cmbLaboratorio.getSelectedIndex() > -1) {
+            llenarMatriz();
+            
+         //   cmbMatriz.removeAllItems();
+         //   cargarMatriz();
+        }       // TODO add your handling code here:
+    }//GEN-LAST:event_cmbLaboratorioItemStateChanged
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -511,178 +572,291 @@ ResultSet result;
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new LoqNuevo().setVisible(true);
+                try {
+                    new LoqNuevo().setVisible(true);
+                } catch (SQLException ex) {
+                    Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
-    
-private void llenarClientes(){
-            String cmb= "SELECT DISTINCT nombrecliente FROM clientes";
+
+private void llenarClientes() {
+        String cmb = "SELECT DISTINCT nombrecliente FROM clientes";
         try {
-            Statement st=cn.createStatement();
+            Statement st = cn.createStatement();
             ResultSet set = st.executeQuery(cmb);
             // Bucle while para la consulta
-            while (set.next()){
+            while (set.next()) {
                 // rellena el combobox a partir de la consulta
                 cmbCliente.addItem(set.getString("nombrecliente"));
             } // cn.close();
 
         } catch (SQLException e) {
             System.err.println("error consulta");
-        }   
+        }
     }
 
-
-
-
-private void llenarLaboratorio(){
-                String cmb= "SELECT DISTINCT laboratorio FROM ensayos";
+private void llenarLaboratorio() {
+        String cmb = "SELECT DISTINCT laboratorio FROM ensayos";
         try {
-            Statement st=cn.createStatement();
+            Statement st = cn.createStatement();
             ResultSet set = st.executeQuery(cmb);
             // Bucle while para la consulta
-            while (set.next()){
+            while (set.next()) {
                 // rellena el combobox a partir de la consulta
                 cmbLaboratorio.addItem(set.getString("laboratorio"));
             } // cn.close();
 
         } catch (SQLException e) {
             System.err.println("error consulta");
-        }  
-}
+        }
+    }
 
-private void llenarSeccion(){
-        String cmb= "SELECT DISTINCT laboratorio FROM secciones WHERE idsecciones != 1";
+private void llenarSeccion() {
+        String cmb = "SELECT DISTINCT laboratorio FROM secciones WHERE idsecciones != 1";
         try {
-            Statement st=cn.createStatement();
+            Statement st = cn.createStatement();
             ResultSet set = st.executeQuery(cmb);
             // Bucle while para la consulta
-            while (set.next()){
+            while (set.next()) {
                 // rellena el combobox a partir de la consulta
                 cmbSecciones.addItem(set.getString("laboratorio"));
             } // cn.close();
 
         } catch (SQLException e) {
             System.err.println("error consulta");
-        }  
-    
-}
+        }
 
-private void llenarMatriz(){
-        String cmb= "SELECT DISTINCT matriz FROM ensayos";
+    }
+
+private void llenarMatriz() {
+        String cmb = "SELECT DISTINCT matriz FROM ensayos";
         try {
-            Statement st=cn.createStatement();
+            Statement st = cn.createStatement();
             ResultSet set = st.executeQuery(cmb);
             // Bucle while para la consulta
-            while (set.next()){
+            while (set.next()) {
                 // rellena el combobox a partir de la consulta
                 cmbMatriz.addItem(set.getString("matriz"));
             } // cn.close();
 
         } catch (SQLException e) {
             System.err.println("error consulta");
-        }  
-    
-}
+        }
 
-private void llenarMetodologia(){
-        String cmb= "SELECT DISTINCT metodologia FROM ensayos";
+    }
+
+private void llenarAnalisis() {
+        String cmb = "SELECT DISTINCT analisis FROM ensayos";
         try {
-            Statement st=cn.createStatement();
+            Statement st = cn.createStatement();
             ResultSet set = st.executeQuery(cmb);
             // Bucle while para la consulta
-            while (set.next()){
+            while (set.next()) {
                 // rellena el combobox a partir de la consulta
-                cmbMetodologia.addItem(set.getString("metodologia"));
+                cmbAnalisis.addItem(set.getString("analisis"));
             } // cn.close();
 
         } catch (SQLException e) {
             System.err.println("error consulta");
-        }  
-    
-}
-
-private void cargarDivisiones(){
-             conectar cc= new conectar();
-         Connection cn= cc.conexion();
-        
-        if(this.cmbCliente.getSelectedIndex()>0)
-            {
-      
-        String nombrecliente = (String) cmbCliente.getSelectedItem();
-          System.out.println(nombrecliente);
-
-        String query = "SELECT * FROM clientes WHERE nombrecliente LIKE'"+cmbCliente.getSelectedItem().toString()+"'";
-    try {
-        PreparedStatement pst = cn.prepareStatement(query);
-        result=pst.executeQuery();
-        while (result.next()){
-            cmbDivision.addItem(result.getString("divisiones"));
-           }
-        cmbDivision.setEnabled(true);
-        cn.close();
-    } catch (SQLException ex) {
-        Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
+
+private void llenarMetodologia() {
+        String cmb = "SELECT DISTINCT metodologias FROM ensayos";
+        try {
+            Statement st = cn.createStatement();
+            ResultSet set = st.executeQuery(cmb);
+            // Bucle while para la consulta
+            while (set.next()) {
+                // rellena el combobox a partir de la consulta
+                cmbMetodologia.addItem(set.getString("metodologias"));
+            } // cn.close();
+
+        } catch (SQLException e) {
+            System.err.println("error consulta");
+        }
+
+    }
+
+private void cargarDivisiones() {
+        conectar cc = new conectar();
+        Connection cn = cc.conexion();
+
+        if (this.cmbCliente.getSelectedIndex() > 0) {
+
+            String nombrecliente = (String) cmbCliente.getSelectedItem();
+            System.out.println(nombrecliente);
+
+            String query = "SELECT * FROM clientes WHERE nombrecliente LIKE'" + cmbCliente.getSelectedItem().toString() + "'";
+            try {
+                PreparedStatement pst = cn.prepareStatement(query);
+                result = pst.executeQuery();
+                while (result.next()) {
+                    cmbDivision.addItem(result.getString("divisiones"));
+                }
+                cmbDivision.setEnabled(true);
+                cn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
 
-}
-private void cargarMatriz(){
-             conectar cc= new conectar();
-         Connection cn= cc.conexion();
-        
-        if(this.cmbSecciones.getSelectedIndex()>0)
-            {
-      
-        String nombresecciones= (String) cmbSecciones.getSelectedItem();
-          System.out.println(nombresecciones);
-
-        String querys = "SELECT DISTINCT matriz FROM ensayos WHERE laboratorio LIKE'%"+cmbSecciones.getSelectedItem().toString()+"%'";
-    try {
-        PreparedStatement pste = cn.prepareStatement(querys);
-            ResultSet results = pste.executeQuery();
-        while (results.next()){
-            cmbMatriz.addItem(results.getString("matriz"));
-           }
-    //    cmbDivision.setEnabled(true);
-        cn.close();
-    } catch (SQLException ex) {
-        Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, ex);
     }
-            }else{
+
+private void cargarMatriz() {
+        conectar cc = new conectar();
+        Connection cn = cc.conexion();
+
+        if (this.cmbLaboratorio.getSelectedIndex() > 0) {
+
+            String nombresecciones = (String) cmbLaboratorio.getSelectedItem();
+            System.out.println(nombresecciones);
+
+            String querys = "SELECT DISTINCT matriz FROM ensayos WHERE laboratorio LIKE'%" + cmbLaboratorio.getSelectedItem().toString() + "%'";
+            try {
+                PreparedStatement pste = cn.prepareStatement(querys);
+                ResultSet results = pste.executeQuery();
+                while (results.next()) {
+                    cmbMatriz.addItem(results.getString("matriz"));
+                }
+                //    cmbDivision.setEnabled(true);
+                cn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
             System.out.println("No seleccionado");
         }
 
-}
+    }
 
-private void cargarAnalisis(){
-             conectar cc= new conectar();
-         Connection cn= cc.conexion();
-        
-        if(this.cmbMatriz.getSelectedIndex()>0)
-            {
-      
-        String nombreanalisis= (String) cmbMatriz.getSelectedItem();
-          System.out.println(nombreanalisis);
+private void cargarAnalisis() {
+        conectar cc = new conectar();
+        Connection cn = cc.conexion();
 
-        String querys = "SELECT DISTINCT analisis FROM ensayos WHERE matriz LIKE'"+cmbMatriz.getSelectedItem().toString()+"'";
-    try {
-        PreparedStatement pste = cn.prepareStatement(querys);
-            ResultSet results = pste.executeQuery();
-        while (results.next()){
-            cmbAnalisis.addItem(results.getString("matriz"));
-           }
-    //    cmbDivision.setEnabled(true);
-        cn.close();
+        if (this.cmbMatriz.getSelectedIndex() >= 0) {
+
+            String nombreanalisis = (String) cmbMatriz.getSelectedItem();
+            System.out.println(nombreanalisis);
+
+            String querys = "SELECT DISTINCT analisis FROM ensayos WHERE matriz LIKE'%" + cmbMatriz.getSelectedItem().toString()+"%'";
+       //             + "%' AND laboratorio LIKE '%"+cmbSecciones.getSelectedItem().toString()+"%'";
+            try {
+                PreparedStatement pste = cn.prepareStatement(querys);
+                ResultSet results = pste.executeQuery();
+                while (results.next()) {
+                    cmbAnalisis.addItem(results.getString("analisis"));
+                }
+                //    cmbDivision.setEnabled(true);
+                cn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else 
+        {
+            System.out.println("No seleccionado");
+        }
+    }
+    
+private void cargarMetodologia() {
+        conectar cc = new conectar();
+        Connection cn = cc.conexion();
+
+        if (this.cmbAnalisis.getSelectedIndex() >= 0) {
+
+            String nombreanalisis = (String) cmbAnalisis.getSelectedItem();
+            System.out.println(nombreanalisis);
+
+            String querys = "SELECT DISTINCT metodologias FROM ensayos WHERE analisis LIKE'%" + cmbAnalisis.getSelectedItem().toString() + "%' AND matriz LIKE '%"+cmbMatriz.getSelectedItem().toString()+"%'";
+            try {
+                PreparedStatement pste = cn.prepareStatement(querys);
+                ResultSet results = pste.executeQuery();
+                while (results.next()) {
+                    cmbMetodologia.addItem(results.getString("metodologias"));
+                }
+                //    cmbDivision.setEnabled(true);
+                cn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            System.out.println("No seleccionado");
+        }
+    }
+
+void llenarTabla() throws SQLException {
+
+        DefaultTableModel modelo = new DefaultTableModel();
+        String query = "SELECT analisis, metodologias FROM analisis WHERE analisis ='" + Nombreanalisis + "'";
+        PreparedStatement pst = cn.prepareStatement(query);
+        result = pst.executeQuery();
+        modelo.setColumnIdentifiers(new Object[]{"Analisis", "metodologias"});
+        try {
+            while (result.next()) {
+
+                modelo.addRow(new Object[]{result.getString("analisis"), result.getString("metodologias")});
+            }
+            Tabla_analisis.setModel(modelo);
+        } catch (Exception e) {
+            Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, e);
+
+        }
+    }
+
+public void insertaranalisis() {
+
+        String add = "INSERT INTO analisis ( analisis, metodologias) VALUES ('" + Nombreanalisis + "','" + NombreMeto + "')";
+        try {
+            PreparedStatement pst = cn.prepareStatement(add);
+            int result = pst.executeUpdate(add);
+
+            if (result > 0) {
+
+                System.out.println("insertado");
+                System.out.println(Nombreanalisis);
+                System.out.println("+" + id);
+                pst.close();
+            } else {
+                System.out.println(Nombreanalisis);
+                System.out.println("+" + id);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+public void BuscarultimaMuestra() throws SQLException{
+        String query = "select idMuestras from muestras order by idMuestras desc limit 1"; 
+  
+                
+                PreparedStatement pst = cn.prepareStatement(query);
+                result=pst.executeQuery();
+                 if (result.next()){
+                     idMuestra=result.getInt("idMuestras");
+                     System.out.println(idMuestra);
+                 }
+    }
+
+
+
+private void numeros() throws SQLException{
+    String SQL= ("select max(nregistro) from muestras");
+    Statement pst = cn.prepareStatement(SQL);
+    ResultSet ResultSet =pst.executeQuery(SQL);
+    try {   
+        while(ResultSet.next()){
+            int c =getInt(1);
+            System.out.println(c);
+            this.txt_registro.setText(Integer.parseInt(c));
+        } 
     } catch (SQLException ex) {
         Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, ex);
     }
-            }else{
-            System.out.println("No seleccionado");
-        }
-
 }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable Tabla_analisis;
     private javax.swing.JButton btnAgregarAnalisis;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JComboBox<String> cmbAnalisis;
@@ -718,15 +892,14 @@ private void cargarAnalisis(){
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField txtCampana;
     private javax.swing.JTextField txtIdentificacion;
     private javax.swing.JTextField txtInformeLOQ;
     private javax.swing.JTextField txtObservaciones;
     private javax.swing.JTextField txtSota;
+    private javax.swing.JLabel txt_registro;
     // End of variables declaration//GEN-END:variables
-         conectar cc= new conectar();
-         Connection cn= cc.conexion();
-
+    conectar cc = new conectar();
+    Connection cn = cc.conexion();
 
 }

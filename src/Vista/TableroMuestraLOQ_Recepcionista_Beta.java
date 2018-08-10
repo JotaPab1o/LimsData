@@ -6,6 +6,7 @@
 package Vista;
 
 import Modelo.conectar;
+import Modelo.usuario;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
@@ -23,7 +24,7 @@ import javax.swing.table.*;
  * @author ESTACION6
  */
 public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
-
+    usuario mod;
     /**
      * Creates new form TableroMuestraLOQ_Recepcionista_Beta
      */
@@ -55,7 +56,7 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
                 return false; //Disallow the editing of any cell
             }
         };
-        jButton1 = new javax.swing.JButton();
+        btn_agregar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -133,11 +134,11 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblDatos);
 
-        jButton1.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        jButton1.setText("Agregar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btn_agregar.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        btn_agregar.setText("Agregar");
+        btn_agregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btn_agregarActionPerformed(evt);
             }
         });
 
@@ -149,7 +150,7 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btn_agregar, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
                         .addGap(26, 26, 26)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 853, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -161,7 +162,7 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
                 .addGap(24, 24, 24)
                 .addComponent(jScrollPane1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btn_agregar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -204,7 +205,7 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btn_agregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_agregarActionPerformed
                  if(Ventanamuestra==false){
                      LoqNuevo LoqNuevo = new LoqNuevo(); //termina if
                      LoqNuevo.setVisible(true);
@@ -213,7 +214,7 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
            else{
               JOptionPane.showMessageDialog(null,"La ventana ya esta abierta");
            }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btn_agregarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -294,8 +295,26 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
                     }
      }   
   public static boolean Ventanamuestra=false;
+  
+  
+  public TableroMuestraLOQ_Recepcionista_Beta(usuario mod){
+      initComponents();
+      setLocationRelativeTo(null);
+      this.mod = mod;
+      
+      lb_usuario_recepcionista.setText(mod.getNombre());
+      
+      if(mod.getId_tipo()==1)
+      {
+          
+          
+      } else if(mod.getId_tipo()==2)
+      {
+          btn_agregar.setVisible(false);
+      }
+  }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btn_agregar;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

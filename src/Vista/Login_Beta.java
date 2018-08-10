@@ -8,12 +8,17 @@ package Vista;
 import Modelo.conectar;
 import com.placeholder.PlaceHolder;
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+
 
 /**
  *
@@ -138,9 +143,11 @@ public class Login_Beta extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_ingresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ingresarActionPerformed
-                String usu=txt_usuario.getText();
-                String pas=new String(jPasswordField1.getPassword());
-                acceder(usu, pas);        // TODO add your handling code here:        // TODO add your handling code here:
+             
+        
+                String usuario=txt_usuario.getText();
+                String pass=new String(jPasswordField1.getPassword());
+                acceder(usuario, pass);        // TODO add your handling code here:        // TODO add your handling code here:
     }//GEN-LAST:event_btn_ingresarActionPerformed
 
     /**
@@ -179,13 +186,17 @@ public class Login_Beta extends javax.swing.JFrame {
     }
 void acceder(String usuario, String pass)
     {
+
+        
         int cap = 0;
        String sql="SELECT * FROM usuarios WHERE usuario='"+usuario+"' && contrasena='"+pass+"'";
         try {
+            
             Statement st = cn.createStatement();
             ResultSet rs = st.executeQuery(sql);
             while(rs.next())
             {
+       //         String sqlUpdate = "UPDATE usuario SET last_session = ? WHERE id?=";
                 cap=rs.getInt("fk_idroles");
             }
             switch (cap) {
@@ -194,6 +205,7 @@ void acceder(String usuario, String pass)
                     JOptionPane.showMessageDialog(null, "Bienvenido");
                     TableroPrincipal_Recepcionista_Beta TableroPrincipal_Recepcionista_Beta = new TableroPrincipal_Recepcionista_Beta();
                     TableroPrincipal_Recepcionista_Beta.setVisible(true);
+        //            lb_usuario_recepcionista.SetText();
                     this.setVisible(false);
                     
                     
@@ -220,6 +232,25 @@ void acceder(String usuario, String pass)
         }
        
         }
+
+
+    public void ObtenerDatos() throws SQLException{
+         String sql="SELECT nombre_usuario FROM usuarios WHERE usuario='"+txt_usuario+"'";
+        
+         PreparedStatement pst = cn.prepareStatement(sql);
+         ResultSet result=pst.executeQuery();
+         if(result.next()){
+             
+         }
+         
+//              String cap = "";
+//            Statement st = cn.createStatement();
+//            ResultSet rs = st.executeQuery(sql);
+//
+//       //         String sqlUpdate = "UPDATE usuario SET last_session = ? WHERE id?=";
+//                cap=rs.getString("fk_idroles");
+        
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_ingresar;
     private javax.swing.JLabel jLabel1;
