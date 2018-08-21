@@ -207,9 +207,13 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
 
     private void btn_agregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_agregarActionPerformed
                  if(Ventanamuestra==false){
-                     LoqNuevo LoqNuevo = new LoqNuevo(); //termina if
-                     LoqNuevo.setVisible(true);
-                     Ventanamuestra=true;
+                     try {
+                         LoqNuevo LoqNuevo = new LoqNuevo(); //termina if
+                         LoqNuevo.setVisible(true);
+                         Ventanamuestra=true;
+                     } catch (SQLException ex) {
+                         Logger.getLogger(TableroMuestraLOQ_Recepcionista_Beta.class.getName()).log(Level.SEVERE, null, ex);
+                     }
            }
            else{
               JOptionPane.showMessageDialog(null,"La ventana ya esta abierta");
