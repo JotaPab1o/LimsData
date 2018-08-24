@@ -154,6 +154,11 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
         });
 
         btn_ver.setText("VER");
+        btn_ver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_verActionPerformed(evt);
+            }
+        });
 
         btn_modificar.setText("MODIFICAR");
         btn_modificar.addActionListener(new java.awt.event.ActionListener() {
@@ -291,7 +296,7 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
     }//GEN-LAST:event_tblDatosMouseEntered
 
     private void tblDatosMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDatosMouseReleased
-obtenerDatosEditar();
+        obtenerDatosEditar();
     }//GEN-LAST:event_tblDatosMouseReleased
 
     private void btn_eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_eliminarActionPerformed
@@ -335,6 +340,28 @@ obtenerDatosEditar();
     }
         }// TODO add your handling code here:
     }//GEN-LAST:event_btn_eliminarActionPerformed
+
+    private void btn_verActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_verActionPerformed
+  if(validacionSeleccionarfila()){
+            JOptionPane.showMessageDialog(this, "Selecciona una fila");
+        }
+         else { 
+      try {
+                  DefaultTableModel modelo = (DefaultTableModel)tblDatos.getModel();
+        int selectRowIndex = tblDatos.getSelectedRow();
+        idMuestras = (int) modelo.getValueAt(selectRowIndex, 0);
+        nregistro = (int) modelo.getValueAt(selectRowIndex,1);  
+        
+        
+          System.out.println(nregistro);
+          codigobarras codigobarras = new codigobarras();
+      codigobarras.setVisible(true);
+      } catch (Exception e) {
+      }
+
+
+  }
+    }//GEN-LAST:event_btn_verActionPerformed
 
     /**
      * @param args the command line arguments
