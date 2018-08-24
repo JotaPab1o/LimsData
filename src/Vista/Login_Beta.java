@@ -25,7 +25,8 @@ import javax.swing.JOptionPane;
  * @author ESTACION6
  */
 public class Login_Beta extends javax.swing.JFrame {
-
+static String N ="";
+static String A ="";
     /**
      * Creates new form Login_Beta
      */
@@ -71,6 +72,16 @@ public class Login_Beta extends javax.swing.JFrame {
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/LIMS(DataLabs)_Icon_06.gif"))); // NOI18N
 
+        txt_usuario.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        txt_usuario.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txt_usuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_usuarioActionPerformed(evt);
+            }
+        });
+
+        jPasswordField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+
         btn_ingresar.setBackground(new java.awt.Color(255, 102, 0));
         btn_ingresar.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         btn_ingresar.setText("Ingresar");
@@ -84,20 +95,23 @@ public class Login_Beta extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel2)
-                .addGap(132, 132, 132))
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txt_usuario)
-                    .addComponent(jPasswordField1))
-                .addContainerGap())
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(113, 113, 113)
-                .addComponent(btn_ingresar, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(135, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txt_usuario)
+                            .addComponent(jPasswordField1))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addGap(0, 122, Short.MAX_VALUE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(132, 132, 132))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                .addComponent(btn_ingresar, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(114, 114, 114))))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -140,6 +154,7 @@ public class Login_Beta extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_ingresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ingresarActionPerformed
@@ -149,6 +164,10 @@ public class Login_Beta extends javax.swing.JFrame {
                 String pass=new String(jPasswordField1.getPassword());
                 acceder(usuario, pass);        // TODO add your handling code here:        // TODO add your handling code here:
     }//GEN-LAST:event_btn_ingresarActionPerformed
+
+    private void txt_usuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_usuarioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_usuarioActionPerformed
 
     /**
      * @param args the command line arguments
@@ -184,20 +203,23 @@ public class Login_Beta extends javax.swing.JFrame {
             }
         });
     }
-void acceder(String usuario, String pass)
+public void acceder(String usuario, String pass)
     {
 
         
         int cap = 0;
-       String sql="SELECT * FROM usuarios WHERE usuario='"+usuario+"' && contrasena='"+pass+"'";
+        String sql = "SELECT * FROM usuarios WHERE usuario='" + usuario + "' && contrasena='" + pass + "'";
         try {
             
             Statement st = cn.createStatement();
             ResultSet rs = st.executeQuery(sql);
             while(rs.next())
             {
-       //         String sqlUpdate = "UPDATE usuario SET last_session = ? WHERE id?=";
                 cap=rs.getInt("fk_idroles");
+                N=rs.getString("nombre_usuario");
+                A=rs.getString("apellido_usuario");
+                
+                System.out.println(N+A);
             }
             switch (cap) {
                 case 1:
@@ -205,7 +227,7 @@ void acceder(String usuario, String pass)
                     JOptionPane.showMessageDialog(null, "Bienvenido");
                     TableroPrincipal_Recepcionista_Beta TableroPrincipal_Recepcionista_Beta = new TableroPrincipal_Recepcionista_Beta();
                     TableroPrincipal_Recepcionista_Beta.setVisible(true);
-        //            lb_usuario_recepcionista.SetText();
+     //               TableroMuestraLOQ_Recepcionista_Beta.lb_usuario_recepcionista.SetText();
                     this.setVisible(false);
                     
                     

@@ -5,6 +5,8 @@
  */
 package datalabs;
 
+import Vista.Login_Beta;
+
 /**
  *
  * @author ESTACION6
@@ -15,7 +17,7 @@ public class DataLabs {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+          new Login_Beta().setVisible(true);
     }
     
 }

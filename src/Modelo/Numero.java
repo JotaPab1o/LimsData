@@ -5,7 +5,7 @@
  */
 package Modelo;
 
-import Vista.LoqNuevo;
+import Vista.Loq_Insertar;
 import java.sql.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;

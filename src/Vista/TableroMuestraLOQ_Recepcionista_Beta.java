@@ -8,16 +8,13 @@ package Vista;
 import Modelo.conectar;
 import Modelo.usuario;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.*;
 import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static javax.management.Query.value;
-import static javax.management.Query.value;
-import javax.swing.*;
 import javax.swing.*;
 import javax.swing.table.*;
+import Vista.Login_Beta;
 
 /**
  *
@@ -25,12 +22,22 @@ import javax.swing.table.*;
  */
 public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
     usuario mod;
+     static int nregistro =0;
+     static int idMuestras;
+     static int fk_idcliente;
+     static String matriz;
+     static int nsota;
+     static java.util.Date fechaingresolaboratorio;
+     static String laboratorioejecutante;
+     int fila;
     /**
      * Creates new form TableroMuestraLOQ_Recepcionista_Beta
      */
     public TableroMuestraLOQ_Recepcionista_Beta() throws SQLException {
         initComponents();
          llamarMuestra();
+         generarNombre();
+         
     }
 
     /**
@@ -47,7 +54,6 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         lb_usuario_recepcionista = new javax.swing.JLabel();
-        lb_fecha = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -57,6 +63,9 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
             }
         };
         btn_agregar = new javax.swing.JButton();
+        btn_ver = new javax.swing.JButton();
+        btn_modificar = new javax.swing.JButton();
+        btn_eliminar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -70,8 +79,6 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
 
         lb_usuario_recepcionista.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         lb_usuario_recepcionista.setText("CECILIA");
-
-        lb_fecha.setText("jLabel3");
 
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Imagenes/hamburguer_bt_01.png"))); // NOI18N
         jButton3.setBorderPainted(false);
@@ -96,13 +103,11 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
                         .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(28, 28, 28)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel1)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                    .addComponent(lb_usuario_recepcionista)
-                                    .addGap(31, 31, 31)))
-                            .addComponent(lb_fecha, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(63, Short.MAX_VALUE))
+                            .addComponent(jLabel1)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(lb_usuario_recepcionista)
+                                .addGap(31, 31, 31)))))
+                .addContainerGap(71, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -111,9 +116,7 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(13, 13, 13)
                 .addComponent(lb_usuario_recepcionista, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lb_fecha, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 290, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(40, 40, 40))
             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -132,6 +135,14 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
 
             }
         ));
+        tblDatos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                tblDatosMouseEntered(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tblDatosMouseReleased(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblDatos);
 
         btn_agregar.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
@@ -142,25 +153,54 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
             }
         });
 
+        btn_ver.setText("VER");
+
+        btn_modificar.setText("MODIFICAR");
+        btn_modificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_modificarActionPerformed(evt);
+            }
+        });
+
+        btn_eliminar.setText("ELIMINAR");
+        btn_eliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_eliminarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
+                        .addGap(747, 747, 747)
                         .addComponent(btn_agregar, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                    .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(26, 26, 26)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 853, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 738, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btn_modificar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btn_eliminar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btn_ver, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(24, 24, 24)
-                .addComponent(jScrollPane1)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 603, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(btn_ver)
+                        .addGap(18, 18, 18)
+                        .addComponent(btn_modificar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btn_eliminar)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btn_agregar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -199,6 +239,7 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -208,7 +249,7 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
     private void btn_agregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_agregarActionPerformed
                  if(Ventanamuestra==false){
                      try {
-                         LoqNuevo LoqNuevo = new LoqNuevo(); //termina if
+                         Loq_Insertar LoqNuevo = new Loq_Insertar(); //termina if
                          LoqNuevo.setVisible(true);
                          Ventanamuestra=true;
                      } catch (SQLException ex) {
@@ -219,6 +260,81 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
               JOptionPane.showMessageDialog(null,"La ventana ya esta abierta");
            }
     }//GEN-LAST:event_btn_agregarActionPerformed
+
+    private void btn_modificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_modificarActionPerformed
+        if( validacionSeleccionarfila()){
+            JOptionPane.showMessageDialog(this, "Selecciona una fila");
+ 
+        }
+        
+        else{
+            
+            obtenerDatosEditar();    
+            Loq_Editar jFrame;
+            try {
+                jFrame = new Loq_Editar();
+                jFrame.setVisible(true); 
+            } catch (SQLException ex) {
+                Logger.getLogger(TableroMuestraLOQ_Recepcionista_Beta.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_modificarActionPerformed
+
+    private void tblDatosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDatosMouseEntered
+                       try {
+            llamarMuestra();
+      
+        } catch (SQLException ex) {
+            Logger.getLogger(TableroMuestraLOQ_Recepcionista_Beta.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_tblDatosMouseEntered
+
+    private void tblDatosMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDatosMouseReleased
+obtenerDatosEditar();
+    }//GEN-LAST:event_tblDatosMouseReleased
+
+    private void btn_eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_eliminarActionPerformed
+       
+        if(validacionSeleccionarfila()){
+            JOptionPane.showMessageDialog(this, "Selecciona una fila");
+              
+        }
+         else {
+            
+       int msj = JOptionPane.showConfirmDialog(null, "¿Desea eliminar fila seleccionada?", "SÍ", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);   
+        if(msj==JOptionPane.YES_OPTION){
+        conectar cc= new conectar();
+        Connection cn= cc.conexion();
+               
+       // String query = ("DELETE FROM muestras WHERE nregistro = '"+fila+"'AND fk_matrices = '"+idMatriz+"'");
+
+       
+            String query =  "DELETE FROM analisis WHERE fk_idmuestras = '"+idMuestras+"'";
+       try {
+                 PreparedStatement pst = cn.prepareStatement(query);
+                    int n= pst.executeUpdate();
+               //     pst.close();
+               try { 
+                 query =  "DELETE FROM muestras WHERE idMuestras = '"+idMuestras+"'";
+     
+                 PreparedStatement pst2 = cn.prepareStatement(query);
+                    int n2= pst2.executeUpdate();
+               //     pst.close();
+                    } catch (Exception e) {
+                Logger.getLogger(TableroMuestraLOQ_Recepcionista_Beta.class.getName()).log(Level.SEVERE, null, e);
+        }
+               
+                System.out.println("tabla eliminada");
+                                llamarMuestra();
+            } catch (Exception e) {
+                Logger.getLogger(TableroMuestraLOQ_Recepcionista_Beta.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }if(msj == JOptionPane.NO_OPTION){
+            System.out.println("No borrado");
+    }
+        }// TODO add your handling code here:
+    }//GEN-LAST:event_btn_eliminarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -272,10 +388,10 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
 //                String   Nombre = text2.getText();
                     });
                 
-                String query = ("SELECT idMuestras, nregistro, fk_idcliente, matriz, nsota , fechaingresolaboratorio, laboratorioejecutante, estado FROM muestras ");
+                String query = ("SELECT * FROM muestras ");
                 PreparedStatement pst = cn.prepareStatement(query);
                 ResultSet ResultSet = pst.executeQuery();
-                modelo.setColumnIdentifiers(new Object[]{"Idmuestra", "Numero Registro","Cliente", "Matriz", "Analisis" , "Ingreso Laboratorio","Laboratorio Ejecutante","Estado", "", "", ""});
+                modelo.setColumnIdentifiers(new Object[]{"Idmuestra", "Numero Registro","Cliente", "Matriz", "Analisis" , "Ingreso Laboratorio","Laboratorio Ejecutante","Estado"});
                 System.out.println("INGRESO");
                 try {
                     while(ResultSet.next()){
@@ -283,8 +399,8 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
                             
                         
                             
-                        modelo.addRow(new Object[]{ResultSet.getInt("idMuestras"),ResultSet.getInt("nregistro"), ResultSet.getInt("fk_idcliente"), ResultSet.getString("matriz"),
-                            ResultSet.getInt("nsota"),ResultSet.getDate("fechaingresolaboratorio"),ResultSet.getString("laboratorioejecutante"),ResultSet.getString("estado"),btnVer,btnMod,btnElim});
+                        modelo.addRow(new Object[]{ResultSet.getInt("idMuestras"),ResultSet.getInt("nregistro"), ResultSet.getInt("fk_idcliente"), ResultSet.getString("matriz"), ResultSet.getInt("idMuestras"),
+                            ResultSet.getDate("fechaingresolaboratorio"),ResultSet.getString("laboratorioejecutante"),ResultSet.getString("estado")});
                        }
                         tblDatos.setModel(modelo );
                 tblDatos.getColumnModel().getColumn(0).setMaxWidth(0);
@@ -298,7 +414,7 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
                     System.out.println("error con tabla");
                     }
      }   
-  public static boolean Ventanamuestra=false;
+
   
   
   public TableroMuestraLOQ_Recepcionista_Beta(usuario mod){
@@ -317,8 +433,89 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
           btn_agregar.setVisible(false);
       }
   }
+  
+  
+  
+      void generarNombre() {
+      conectar cc = new conectar();
+        String sql = "Select CONCAT(nombre_usuario, ' ', apellido_usuario) As Nombre From usuarios WHERE nombre_usuario LIKE '"+Login_Beta.N+"' AND apellido_usuario LIKE '"+Login_Beta.A+"'";
+        
+        //    Connection cn = (Connection) cc.conexion();
+        try {
+            java.sql.Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            while (rs.next()) {
+                //Aca le digo que muestre el valor en un JtextFiel
+
+                lb_usuario_recepcionista.setText(rs.getString("Nombre"));
+                lb_usuario_recepcionista.repaint();
+
+            }
+
+        } catch (SQLException e) {
+            // NOTA: So hubo error muestra el error
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+      
+      
+           boolean validacionSeleccionarfila(){
+         
+         if(nregistro<=0){
+             
+              return true; 
+         }else{
+
+            return false;
+        }
+
+     }
+           
+ public void obtenerDatosEditar(){
+
+     DefaultTableModel modelo = (DefaultTableModel)tblDatos.getModel();
+     int selectRowIndex = tblDatos.getSelectedRow();
+        idMuestras = (int) modelo.getValueAt(selectRowIndex, 0);
+        nregistro = (int) modelo.getValueAt(selectRowIndex,1);
+        fk_idcliente = (int) modelo.getValueAt(selectRowIndex, 2);
+        matriz = (String) modelo.getValueAt(selectRowIndex, 3);
+        nsota = (int) modelo.getValueAt(selectRowIndex, 4);
+        fechaingresolaboratorio = (Date) modelo.getValueAt(selectRowIndex, 5);
+        laboratorioejecutante = (String) modelo.getValueAt(selectRowIndex, 6);
+ 
+        System.out.println("catch");
+
+ }
+   public  void obtenerFila(){
+        
+         DefaultTableModel modelo = (DefaultTableModel)tblDatos.getModel();
+            fila = tblDatos.getSelectedRow();
+            fila = (int) modelo.getValueAt(fila,0);
+            System.out.println(fila);
+    }
+   
+   
+        boolean ventanaEditarAbierta() throws SQLException{
+
+            if (Ventanamuestra == false) {
+                Loq_Editar VentNvoPres = new Loq_Editar(); //termina if
+                VentNvoPres.setVisible(true);
+                Ventanamuestra = true;
+    
+            return true;
+        } else {
+            JOptionPane.showMessageDialog(null, "La ventana MUESTRAS ya esta abierta");
+            return false;
+        }
+    }
+
+   public static boolean Ventanamuestra=false;
+   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_agregar;
+    private javax.swing.JButton btn_eliminar;
+    private javax.swing.JButton btn_modificar;
+    private javax.swing.JButton btn_ver;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -326,7 +523,6 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lb_fecha;
     private javax.swing.JLabel lb_usuario_recepcionista;
     private javax.swing.JTable tblDatos;
     // End of variables declaration//GEN-END:variables

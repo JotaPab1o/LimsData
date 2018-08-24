@@ -17,6 +17,8 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import Modelo.Numero;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.sql.Array;
+import java.util.Arrays;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
@@ -29,7 +31,7 @@ import javax.swing.JLabel;
  *
  * @author ESTACION 4
  */
-public class LoqNuevo extends javax.swing.JFrame {
+public class Loq_Insertar extends javax.swing.JFrame {
     // static Connection cc= null;
 
     ResultSet result;
@@ -40,18 +42,20 @@ public class LoqNuevo extends javax.swing.JFrame {
     static int pp;
     static String nombrelaboratorio;
     static int idlaboratorio =0;
-    
+    static DefaultTableModel modelo = new DefaultTableModel();
+    static String a = "";
+    static String b = "";
 
     /**
      * Creates new form LoqNuevo
      */
     DefaultComboBoxModel modeloCombo;
 
-    public LoqNuevo() throws SQLException {
+    public Loq_Insertar() throws SQLException {
         //   cargarcodigo();
 
         //     txt_registro.setText(); 
-        modeloCombo = new DefaultComboBoxModel(new String[]{});
+      
         initComponents();
            llenarClientes();
         //      llenarLaboratorio();
@@ -64,13 +68,10 @@ public class LoqNuevo extends javax.swing.JFrame {
         AutoCompleteDecorator.decorate(cmbAnalisis);
         AutoCompleteDecorator.decorate(cmbMatriz);
         txtSota.setEnabled(false);
-        cmbAnalisis.setEnabled(false);
-        cmbMetodologia.setEnabled(false);
-        btnAgregarAnalisis.setEnabled(false);
-        Tabla_analisis.setEnabled(false);
+
 //        cmbMatriz.setEnabled(false);
         //NumeroR();
-        generarNumeroFactura();
+        generarNumeroRegistro();
       
 
     }
@@ -124,7 +125,6 @@ public class LoqNuevo extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         jLabel19 = new javax.swing.JLabel();
         jSeparator2 = new javax.swing.JSeparator();
-        jSeparator3 = new javax.swing.JSeparator();
         lb_registro = new javax.swing.JLabel();
         jSeparator4 = new javax.swing.JSeparator();
 
@@ -224,12 +224,12 @@ public class LoqNuevo extends javax.swing.JFrame {
 
             },
             new String [] {
-
+                "SECCION", "ANALISIS", "METODOLOGIA"
             }
         ));
         jScrollPane1.setViewportView(Tabla_analisis);
 
-        btnAgregarAnalisis.setText("Añadir");
+        btnAgregarAnalisis.setText("Insert Analisis");
         btnAgregarAnalisis.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAgregarAnalisisActionPerformed(evt);
@@ -269,133 +269,136 @@ public class LoqNuevo extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnGuardar)
-                        .addGap(68, 68, 68))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lb_registro, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel19)
                                 .addGap(18, 18, 18)
-                                .addComponent(lb_registro, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jSeparator2))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 930, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(6, 6, 6)))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel1)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(cmbCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jLabel15)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(cmbDivision, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jLabel2))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel3)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(cmbLaboratorioEjec, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jLabel4)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(txtSota, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(38, 38, 38)
+                                    .addComponent(jLabel6)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(fechaIngreso, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGap(18, 18, 18)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel8)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(fechaEstimada, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(txtCampana, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jLabel7)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(txtInformeLOQ, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(27, 27, 27)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jSeparator3, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel9)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(cmbMatriz, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jLabel11)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(txtIdentificacion, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(26, 26, 26)
-                                        .addComponent(jLabel10)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(fechaMuestreo, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                            .addComponent(jLabel19)
-                                            .addGap(18, 18, 18)
-                                            .addComponent(jSeparator2))
-                                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                            .addComponent(jLabel18)
-                                            .addGap(18, 18, 18)
-                                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 930, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(txtObservaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 727, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                    .addGap(176, 176, 176)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 636, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnGuardar))
+                                .addComponent(jSeparator4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 1063, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
+                                .addComponent(jLabel9)
                                 .addGap(18, 18, 18)
-                                .addComponent(cmbCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(cmbMatriz, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jLabel15)
+                                .addComponent(jLabel11)
                                 .addGap(18, 18, 18)
-                                .addComponent(cmbDivision, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtIdentificacion, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(26, 26, 26)
+                                .addComponent(jLabel10)
                                 .addGap(18, 18, 18)
-                                .addComponent(jLabel2)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtCampana, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel7)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtInformeLOQ, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(176, 176, 176)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel16)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(cmbAnalisis, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(26, 26, 26)
-                                        .addComponent(jLabel12)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(cmbMetodologia, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(btnAgregarAnalisis))
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 636, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addContainerGap(53, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 1063, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addGap(18, 18, 18)
-                                .addComponent(cmbSecciones, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel13)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtObservaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 496, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(18, 18, 18)
-                                .addComponent(cmbLaboratorioEjec, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(76, 76, 76)
-                                .addComponent(jLabel4)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtSota, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel6)
-                                .addGap(18, 18, 18)
-                                .addComponent(fechaIngreso, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel8)
-                                .addGap(18, 18, 18)
-                                .addComponent(fechaEstimada, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                                .addComponent(fechaMuestreo, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(15, 26, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(102, 102, 102)
+                .addComponent(jLabel5)
+                .addGap(18, 18, 18)
+                .addComponent(cmbSecciones, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel16)
+                .addGap(18, 18, 18)
+                .addComponent(cmbAnalisis, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26)
+                .addComponent(jLabel12)
+                .addGap(18, 18, 18)
+                .addComponent(cmbMetodologia, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnAgregarAnalisis)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(24, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel17, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lb_registro, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmbCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel15)
-                    .addComponent(cmbDivision, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtCampana, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel7)
-                    .addComponent(txtInformeLOQ, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(fechaEstimada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cmbLaboratorioEjec, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4)
-                            .addComponent(txtSota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6)))
-                    .addComponent(fechaIngreso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cmbCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel15)
+                            .addComponent(cmbDivision, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtCampana, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel7)
+                            .addComponent(txtInformeLOQ, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(cmbLaboratorioEjec, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel4)
+                                    .addComponent(txtSota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel6)))
+                            .addComponent(fechaIngreso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(fechaEstimada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -410,15 +413,10 @@ public class LoqNuevo extends javax.swing.JFrame {
                         .addComponent(jLabel10))
                     .addComponent(fechaMuestreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(7, 7, 7)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cmbSecciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel13)
-                    .addComponent(txtObservaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnGuardar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(txtObservaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13))
+                .addGap(29, 29, 29)
                 .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(2, 2, 2)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -426,9 +424,16 @@ public class LoqNuevo extends javax.swing.JFrame {
                     .addComponent(cmbAnalisis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12)
                     .addComponent(cmbMetodologia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnAgregarAnalisis))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAgregarAnalisis)
+                    .addComponent(cmbSecciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(163, 163, 163)
+                        .addComponent(btnGuardar))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(16, 16, 16))
         );
 
@@ -440,12 +445,11 @@ public class LoqNuevo extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 566, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE)
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void cmbClienteItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbClienteItemStateChanged
@@ -494,29 +498,38 @@ public class LoqNuevo extends javax.swing.JFrame {
                     btnAgregarAnalisis.setEnabled(true);
                     Tabla_analisis.setEnabled(true);
                     
-                    cmbCliente.setEnabled(false);
-                    cmbDivision.setEnabled(false);
-                    txtCampana.setEnabled(false);
-                    txtInformeLOQ.setEnabled(false);
-                    cmbLaboratorioEjec.setEnabled(false);
-                    txtSota.setEnabled(false);
-                    fechaIngreso.setEnabled(false);
-                    fechaEstimada.setEnabled(false);
-                    cmbMatriz.setEnabled(false);
-                    fechaMuestreo.setEnabled(false);
-                    txtIdentificacion.setEnabled(false);
-                    txtObservaciones.setEnabled(false);
-                    btnGuardar.setEnabled(false);
-                    cmbSecciones.setEnabled(false);
-                    
-                    
+//                    cmbCliente.setEnabled(false);
+//                    cmbDivision.setEnabled(false);
+//                    txtCampana.setEnabled(false);
+//                    txtInformeLOQ.setEnabled(false);
+//                    cmbLaboratorioEjec.setEnabled(false);
+//                    txtSota.setEnabled(false);
+//                    fechaIngreso.setEnabled(false);
+//                    fechaEstimada.setEnabled(false);
+//                    cmbMatriz.setEnabled(false);
+//                    fechaMuestreo.setEnabled(false);
+//                    txtIdentificacion.setEnabled(false);
+//                    txtObservaciones.setEnabled(false);
+//                    btnGuardar.setEnabled(false);
+//                    cmbSecciones.setEnabled(false);
+                   getstringArray();
+                    NombreMeto = (String) cmbMetodologia.getSelectedItem();
+                    dispose();
+        try {
+            getstringArray();
+           
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Favor llenar todos los campos");
+            Logger.getLogger(Loq_Insertar.class.getName()).log(Level.SEVERE, null, ex);
+        }        
 
                 } else {
                     JOptionPane.showMessageDialog(this, "Error");
                 }
 
             } catch (SQLException ex) {
-                Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(this, "Favor llenar todos los campos");
+                Logger.getLogger(Loq_Insertar.class.getName()).log(Level.SEVERE, null, ex);
 
             }
         } else {
@@ -559,26 +572,37 @@ public class LoqNuevo extends javax.swing.JFrame {
                     Tabla_analisis.setEnabled(true);
 
                     
-                    cmbCliente.setEnabled(false);
-                    cmbDivision.setEnabled(false);
-                    txtCampana.setEnabled(false);
-                    txtInformeLOQ.setEnabled(false);
-                    cmbLaboratorioEjec.setEnabled(false);
-                    txtSota.setEnabled(false);
-                    fechaIngreso.setEnabled(false);
-                    fechaEstimada.setEnabled(false);
-                    cmbMatriz.setEnabled(false);
-                    fechaMuestreo.setEnabled(false);
-                    txtIdentificacion.setEnabled(false);
-                    txtObservaciones.setEnabled(false);
-                    btnGuardar.setEnabled(false);
-                    cmbSecciones.setEnabled(false);
+//                    cmbCliente.setEnabled(false);
+//                    cmbDivision.setEnabled(false);
+//                    txtCampana.setEnabled(false);
+//                    txtInformeLOQ.setEnabled(false);
+//                    cmbLaboratorioEjec.setEnabled(false);
+//                    txtSota.setEnabled(false);
+//                    fechaIngreso.setEnabled(false);
+//                    fechaEstimada.setEnabled(false);
+//                    cmbMatriz.setEnabled(false);
+//                    fechaMuestreo.setEnabled(false);
+//                    txtIdentificacion.setEnabled(false);
+//                    txtObservaciones.setEnabled(false);
+//                    btnGuardar.setEnabled(false);
+//                    cmbSecciones.setEnabled(false);
+                    getstringArray();
+                    dispose();
+                            NombreMeto = (String) cmbMetodologia.getSelectedItem();
+        try {
+            getstringArray();
+            
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Favor llenar todos los campos");
+            Logger.getLogger(Loq_Insertar.class.getName()).log(Level.SEVERE, null, ex);
+        }
                 } else {
                     JOptionPane.showMessageDialog(this, "Error");
                 }
 
             } catch (SQLException ex) {
-                Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(this, "Favor llenar todos los campos");
+                Logger.getLogger(Loq_Insertar.class.getName()).log(Level.SEVERE, null, ex);
 
             }
         }
@@ -613,14 +637,22 @@ public class LoqNuevo extends javax.swing.JFrame {
     }//GEN-LAST:event_cmbMatrizItemStateChanged
 
     private void btnAgregarAnalisisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarAnalisisActionPerformed
-        
-        NombreMeto = (String) cmbMetodologia.getSelectedItem();
-        try {
-            insertaranalisis();
-            llenarTabla();
-        } catch (SQLException ex) {
-            Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+        DefaultTableModel modelo = (DefaultTableModel) Tabla_analisis.getModel(); 
+        Object [] fila=new Object[3]; 
+        fila[0]=cmbSecciones.getSelectedItem().toString();
+        fila[1]=cmbAnalisis.getSelectedItem().toString();
+        fila[2]=cmbMetodologia.getSelectedItem().toString();
+         modelo.addRow(fila); 
+         Tabla_analisis.setModel(modelo);        
+//        try {
+//DefaultTableModel model = (DefaultTableModel) Tabla_analisis.getModel(); 
+//
+//llenarTabla();
+//getstringArray();
+//        } catch (SQLException ex) {
+//            Logger.getLogger(Loq_Insertar.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }//GEN-LAST:event_btnAgregarAnalisisActionPerformed
 
     private void cmbAnalisisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbAnalisisActionPerformed
@@ -638,17 +670,17 @@ public class LoqNuevo extends javax.swing.JFrame {
         if (cmbLaboratorioEjec.getSelectedIndex() > -1) {
             cmbMatriz.removeAllItems();
             llenarMatriz();
-            try {
-                llenarTabla();
-            } catch (SQLException ex) {
-                Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, ex);
-            }
+//            try {
+//                llenarTabla();
+//            } catch (SQLException ex) {
+//                Logger.getLogger(Loq_Insertar.class.getName()).log(Level.SEVERE, null, ex);
+//            }
         }else{
-            try {
-                llenarTabla();
-            } catch (SQLException ex) {
-                Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, ex);
-            }
+//            try {
+//                llenarTabla();
+//            } catch (SQLException ex) {
+//                Logger.getLogger(Loq_Insertar.class.getName()).log(Level.SEVERE, null, ex);
+//            }
         }
     }//GEN-LAST:event_cmbLaboratorioEjecItemStateChanged
 
@@ -669,23 +701,24 @@ public class LoqNuevo extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(LoqNuevo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Loq_Insertar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(LoqNuevo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Loq_Insertar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(LoqNuevo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Loq_Insertar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(LoqNuevo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Loq_Insertar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new LoqNuevo().setVisible(true);
+                    new Loq_Insertar().setVisible(true);
                 } catch (SQLException ex) {
-                    Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Loq_Insertar.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
             }
@@ -811,7 +844,7 @@ public class LoqNuevo extends javax.swing.JFrame {
                 System.out.println(cmbDivision);
                 cn.close();
             } catch (SQLException ex) {
-                Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Loq_Insertar.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -836,7 +869,7 @@ public class LoqNuevo extends javax.swing.JFrame {
                 //    cmbDivision.setEnabled(true);
                 //    cn.close();
             } catch (SQLException ex) {
-                Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Loq_Insertar.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
                 result.close();
                 cn.close();
@@ -866,7 +899,7 @@ public class LoqNuevo extends javax.swing.JFrame {
                 //    cmbDivision.setEnabled(true);
                 cn.close();
             } catch (SQLException ex) {
-                Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Loq_Insertar.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             System.out.println("No seleccionado");
@@ -892,7 +925,7 @@ public class LoqNuevo extends javax.swing.JFrame {
                 //    cmbDivision.setEnabled(true);
                 cn.close();
             } catch (SQLException ex) {
-                Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Loq_Insertar.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             System.out.println("No seleccionado");
@@ -913,7 +946,7 @@ public class LoqNuevo extends javax.swing.JFrame {
                 }
                 cn.close();
             } catch (Exception e) {
-                Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, e);
+                Logger.getLogger(Loq_Insertar.class.getName()).log(Level.SEVERE, null, e);
             }
         } else {
             System.out.println("SECCION No seleccionado");
@@ -923,26 +956,29 @@ public class LoqNuevo extends javax.swing.JFrame {
     void llenarTabla() throws SQLException {
 
         DefaultTableModel modelo = new DefaultTableModel();
-        String query = "SELECT * FROM analisis WHERE fk_idmuestras ='" + idMuestra + "'";
-        PreparedStatement pst = cn.prepareStatement(query);
-        result = pst.executeQuery();
-        modelo.setColumnIdentifiers(new Object[]{"Analisis", "Metodologias"});
-        try {
-            while (result.next()) {
+        Object [] fila=new Object[3]; 
+        fila[0]=cmbSecciones.getSelectedItem();
+        fila[1]=cmbAnalisis.getSelectedItem();
+        fila[2]=cmbMetodologia.getSelectedItem();
+         modelo.addRow(fila); 
+         Tabla_analisis.setModel(modelo); 
+//        String query = "SELECT * FROM analisis WHERE fk_idmuestras ='" + idMuestra + "'";
+//        PreparedStatement pst = cn.prepareStatement(query);
+//        result = pst.executeQuery();
+//        modelo.setColumnIdentifiers(new Object[]{"Seccion", "Analisis", "Metodologias",});
+//        Tabla_analisis.setModel(modelo);
+//        modelo.addRow(new Object[]{cmbSecciones.getSelectedItem(), cmbAnalisis.getSelectedItem(), cmbMetodologia.getSelectedItem().toString()});
+//        
+//        
 
-                modelo.addRow(new Object[]{result.getString("analisis"), result.getString("metodologias")});
-            }
-            Tabla_analisis.setModel(modelo);
-        } catch (Exception e) {
-            Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, e);
-
-        }
     }
 
-    public void insertaranalisis() throws SQLException {
+    public void insertaranalisis(String a, String b) throws SQLException {
+        
+        System.out.println(a);
         Nombreanalisis = (String) cmbAnalisis.getSelectedItem();
         BuscarultimaMuestra();
-        String add = "INSERT INTO analisis ( analisis, metodologias, fk_idmuestras) VALUES ('" + Nombreanalisis + "','" + NombreMeto + "','" + idMuestra + "')";
+        String add = "INSERT INTO analisis ( analisis, metodologias, fk_idmuestras) VALUES ('" + a + "','" + b + "','" + idMuestra + "')";
         try {
             PreparedStatement pst = cn.prepareStatement(add);
             int result = pst.executeUpdate(add);
@@ -958,7 +994,7 @@ public class LoqNuevo extends javax.swing.JFrame {
                 System.out.println("+" + idlaboratorio);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Loq_Insertar.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -988,12 +1024,12 @@ public class LoqNuevo extends javax.swing.JFrame {
             }
             //cn.close();
         } catch (SQLException e) {
-            Logger.getLogger(LoqNuevo.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(Loq_Insertar.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 
 //GENERA NUMERO DE FACTURA DE COMPRA
-    void generarNumeroFactura() {
+    void generarNumeroRegistro() {
        
         String sql = "SELECT LAST_INSERT_ID(nregistro)+1 as nregistro FROM muestras ORDER BY nregistro DESC LIMIT 1";
         conectar cc = new conectar();
@@ -1040,18 +1076,44 @@ Connection cn = cc.conexion();
      String sql ="INSERT INTO analisis(analisis, metodologias,fk_idmuestras) VALUES (?,?,?)";
        try {
             PreparedStatement pst = cn.prepareStatement(sql);
-                //     Statement.RETURN_GENERATED_KEYS;
+                //     Statement.RETURN_GENERATED_KEYS;     
 
                 pst.setString(1, Nombreanalisis);
                 pst.setString(2, NombreMeto);
                 pst.setInt(3, idlaboratorio);
      } catch (Exception e) {
      }
-    
- 
+    		}
      String sql1 ="";
+     
+     
+public String Tabla(){
+    String Analisis = null;
+    StrictMath Metodologia = null;
+        for (int i = 0; i < Tabla_analisis.getRowCount(); i++) {
+				Tabla_analisis.getValueAt(i,0);
+                                Tabla_analisis.getValueAt(i, 1);
+				System.out.println(i);
  }
-  
+        return Analisis;
+       
+}
+
+public void  getstringArray() throws SQLException{
+
+    for (int i = 0; i < Tabla_analisis.getRowCount(); i++) {
+       
+     String a= (String) Tabla_analisis.getValueAt(i, 0);
+      String b=(String) Tabla_analisis.getValueAt(i, 1);
+      
+   
+       insertaranalisis(a,b); 
+    }
+      
+      
+      
+}
+ 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable Tabla_analisis;
     private javax.swing.JButton btnAgregarAnalisis;
@@ -1088,7 +1150,6 @@ Connection cn = cc.conexion();
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JLabel lb_registro;
     private javax.swing.JTextField txtCampana;
