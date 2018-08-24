@@ -267,23 +267,23 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_agregarActionPerformed
 
     private void btn_modificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_modificarActionPerformed
-        if( validacionSeleccionarfila()){
-            JOptionPane.showMessageDialog(this, "Selecciona una fila");
- 
-        }
-        
-        else{
-            
-            obtenerDatosEditar();    
-            Loq_Editar jFrame;
-            try {
-                jFrame = new Loq_Editar();
-                jFrame.setVisible(true); 
-            } catch (SQLException ex) {
-                Logger.getLogger(TableroMuestraLOQ_Recepcionista_Beta.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-        }        // TODO add your handling code here:
+//        if( validacionSeleccionarfila()){
+//            JOptionPane.showMessageDialog(this, "Selecciona una fila");
+// 
+//        }
+//        
+//        else{
+//            
+//            obtenerDatosEditar();    
+//            Loq_Editar jFrame;
+//            try {
+//                jFrame = new Loq_Editar();
+//                jFrame.setVisible(true); 
+//            } catch (SQLException ex) {
+//                Logger.getLogger(TableroMuestraLOQ_Recepcionista_Beta.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//            
+//        }        // TODO add your handling code here:
     }//GEN-LAST:event_btn_modificarActionPerformed
 
     private void tblDatosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDatosMouseEntered
@@ -414,11 +414,12 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
 //                String   Codigo = text1.getText();
 //                String   Nombre = text2.getText();
                     });
-                
-                String query = ("SELECT * FROM muestras ");
+
+      String query = ("SELECT m.idMuestras, m.nregistro, c.nombrecliente, m.matriz, a.analisis, m.fechaingresolaboratorio, m.laboratorioejecutante, m.estado FROM muestras m INNER JOIN analisis a ON m.idMuestras = a.fk_idmuestras INNER JOIN clientes c ON m.fk_idcliente = c.idClientes");
+             //   String query = ("SELECT * FROM muestras ");
                 PreparedStatement pst = cn.prepareStatement(query);
                 ResultSet ResultSet = pst.executeQuery();
-                modelo.setColumnIdentifiers(new Object[]{"Idmuestra", "Numero Registro","Cliente", "Matriz", "Analisis" , "Ingreso Laboratorio","Laboratorio Ejecutante","Estado"});
+                modelo.setColumnIdentifiers(new Object[]{"idMuestras", "Numero Registro", "Cliente", "Matriz", "Analisis" , "Ingreso Laboratorio","Laboratorio Ejecutante","Estado"});
                 System.out.println("INGRESO");
                 try {
                     while(ResultSet.next()){
@@ -426,8 +427,8 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
                             
                         
                             
-                        modelo.addRow(new Object[]{ResultSet.getInt("idMuestras"),ResultSet.getInt("nregistro"), ResultSet.getInt("fk_idcliente"), ResultSet.getString("matriz"), ResultSet.getInt("idMuestras"),
-                            ResultSet.getDate("fechaingresolaboratorio"),ResultSet.getString("laboratorioejecutante"),ResultSet.getString("estado")});
+                        modelo.addRow(new Object[]{ResultSet.getInt("m.idMuestras"),ResultSet.getInt("m.nregistro"), ResultSet.getString("c.nombrecliente"), ResultSet.getString("m.matriz"), Listaanalisis(a),
+                            ResultSet.getDate("m.fechaingresolaboratorio"),ResultSet.getString("m.laboratorioejecutante"),ResultSet.getString("m.estado")});
                        }
                         tblDatos.setModel(modelo );
                 tblDatos.getColumnModel().getColumn(0).setMaxWidth(0);
@@ -438,6 +439,7 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
                 
                        
                     } catch (SQLException e) {
+                        Logger.getLogger(TableroMuestraLOQ_Recepcionista_Beta.class.getName()).log(Level.SEVERE, null, e);
                     System.out.println("error con tabla");
                     }
      }   
@@ -535,7 +537,38 @@ public class TableroMuestraLOQ_Recepcionista_Beta extends javax.swing.JFrame {
             return false;
         }
     }
+    String Listaanalisis(int a) throws SQLException{
+      
+ 
+       String c="";
+      
+       int numero = 56;
+                conectar cc= new conectar();
+                Connection cn= cc.conexion();
+               
+                String query = ("SELECT * FROM analisis WHERE fk_idmuestras ='"+a+"'");
+             
+                PreparedStatement pst = cn.prepareStatement(query);
+                ResultSet ResultSet = pst.executeQuery();
+             
+                try {
+                    while(ResultSet.next()){
 
+                        String a1 =  ResultSet.getString("analisis");
+                        
+                        c = c+""+a1+",";
+
+                        System.out.println(a1);
+                        
+                       }
+                    } catch (SQLException e) {
+                    System.out.println("no se pudo");
+     
+     }
+               cn.close();
+        return c;
+            
+   }
    public static boolean Ventanamuestra=false;
    
     // Variables declaration - do not modify//GEN-BEGIN:variables

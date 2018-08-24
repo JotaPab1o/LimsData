@@ -464,8 +464,8 @@ public class Loq_Insertar extends javax.swing.JFrame {
             conectar cc = new conectar();
             Connection cn = cc.conexion();
 
-            String ins = "INSERT INTO muestras (fk_idcliente, campaña, laboratorioejecutante, nsota, secciones, fechaingresolaboratorio, ninformeloq, fechaentregaestimada, matriz, "
-                    + "fechamuestreo, identificacion, observaciones, nregistro) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            String ins = "INSERT INTO muestras (fk_idcliente, campana, laboratorioejecutante, nsota, secciones, fechaingresolaboratorio, ninformeloq, fechaentregaestimada, matriz, "
+                    + "fechamuestreo, identificacion, observaciones, nregistro, estado) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,'recepcion')";
 
             try {
                 PreparedStatement pst = cn.prepareStatement(ins);
@@ -1103,8 +1103,8 @@ public void  getstringArray() throws SQLException{
 
     for (int i = 0; i < Tabla_analisis.getRowCount(); i++) {
        
-     String a= (String) Tabla_analisis.getValueAt(i, 0);
-      String b=(String) Tabla_analisis.getValueAt(i, 1);
+     String a= (String) Tabla_analisis.getValueAt(i, 1);
+      String b=(String) Tabla_analisis.getValueAt(i, 2);
       
    
        insertaranalisis(a,b); 
